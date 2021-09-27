@@ -6,9 +6,10 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class ClientHandler implements Runnable{
-    Socket client;
-    PrintWriter pw;
-    Scanner scanner;
+    private Socket client;
+    private PrintWriter pw;
+    private Scanner scanner;
+    private String name;
 
     public ClientHandler(Socket socket) throws IOException {
         this.client = socket;
@@ -16,12 +17,14 @@ public class ClientHandler implements Runnable{
         this.scanner = new Scanner(client.getInputStream());
     }
 
-    public void protocol(){
-
+    public void protocol() {
+        pw.println("Hi what is your name?");
+        name = scanner.nextLine();
+        pw.println("CONNECT#" + name);
     }
 
     @Override
     public void run() {
-        pw.println("Hello");
+        protocol();
     }
 }
