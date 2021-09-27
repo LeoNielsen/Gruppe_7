@@ -16,9 +16,12 @@ public class ClientHandler implements Runnable{
         this.scanner = new Scanner(client.getInputStream());
     }
 
+    public void protocol(){
+
+    }
+
     @Override
     public void run() {
-
         pw.println("Hello");
     }
 }
