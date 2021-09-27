@@ -10,9 +10,11 @@ public class ClientHandler implements Runnable {
     private PrintWriter pw;
     private Scanner scanner;
     private String name;
+    private Dispatcher disp;
 
-    public ClientHandler(Socket socket) throws IOException {
+    public ClientHandler(Socket socket, Dispatcher disp) throws IOException {
         this.client = socket;
+        this.disp = disp;
         this.pw = new PrintWriter(client.getOutputStream(), true);
         this.scanner = new Scanner(client.getInputStream());
     }
@@ -20,7 +22,7 @@ public class ClientHandler implements Runnable {
     public void protocol() throws IOException {
         pw.println("Hi what is your name?");
         name = scanner.nextLine();
-        pw.println("CONNECT#" + name);
+        disp.addClient(this);
         String msg = "";
         while (!msg.equals("CLOSE#")) {
             msg = scanner.nextLine();
@@ -57,6 +59,10 @@ public class ClientHandler implements Runnable {
 
     public PrintWriter getPw() {
         return pw;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
