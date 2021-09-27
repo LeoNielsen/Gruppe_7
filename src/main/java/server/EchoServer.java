@@ -16,7 +16,7 @@ public class EchoServer {
         ServerSocket serverSocket = new ServerSocket(port);
         while (true) {
             Socket client = serverSocket.accept();
-            new ClientHandler(client).start();
+            new Thread(new ClientHandler(client)).start();
         }
     }
 
