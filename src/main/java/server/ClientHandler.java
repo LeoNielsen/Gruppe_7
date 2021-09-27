@@ -55,6 +55,10 @@ public class ClientHandler implements Runnable {
         client.close();
     }
 
+    public PrintWriter getPw() {
+        return pw;
+    }
+
     @Override
     public void run() {
         try {
