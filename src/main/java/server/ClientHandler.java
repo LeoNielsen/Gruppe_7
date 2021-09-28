@@ -35,7 +35,12 @@ public class ClientHandler implements Runnable {
                 switch (action) {
                     case "SEND":
                         String receiver = strings[1];
-                        disp.getClient(receiver).getPw().println(name + ": " + data);
+                        if(!receiver.equals("*")) {
+                            disp.getClient(receiver).getPw().println(name + ": " + data);
+                        }
+                        else {
+                            disp.getMessages().add(name + " has send to all: " + data);
+                        }
                         break;
                 }
             }

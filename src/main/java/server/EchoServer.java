@@ -27,6 +27,7 @@ public class EchoServer {
             Socket client = serverSocket.accept();
             ClientHandler clientHandler = new ClientHandler(client, dispatcher);
             new Thread(clientHandler).start();
+            new Thread(dispatcher).start();
         }
     }
 

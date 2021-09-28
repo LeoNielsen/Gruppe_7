@@ -20,6 +20,10 @@ public class Dispatcher implements Runnable{
         }
     }
 
+    public BlockingQueue<String> getMessages() {
+        return messages;
+    }
+
     public ClientHandler getClient(String name) {
         for(ClientHandler c : clients) {
             if(c.getName().equals(name)) {
