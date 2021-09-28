@@ -9,11 +9,7 @@ public class Message {
     public Message(String sender, String receiver, String message) {
         this.sender = sender;
         this.receiver = receiver;
-        this.message = message;
-    }
-
-    public String getSender() {
-        return sender;
+        this.message = sender + ": " + message;
     }
 
     public String getReceiver() {
