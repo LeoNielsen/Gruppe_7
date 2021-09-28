@@ -19,22 +19,20 @@ public class EchoClient {
         client = new Socket(address,port);
         pw = new PrintWriter(client.getOutputStream(), true);
         scanner = new Scanner(client.getInputStream());
-//        Reader reader = new Reader(scanner);
-//        reader.start();
+        Reader reader = new Reader(scanner, pw);
+        reader.start();
         Scanner keyboard = new Scanner(System.in);
-        boolean keepRunning = true;
 
-        while(keepRunning){
-            System.out.println(scanner.nextLine());
-            String msgToSend = keyboard.nextLine();
-            pw.println(msgToSend);
 
-            if (msgToSend.equals("CLOSE#")){
-                keepRunning = false;
-            }
+
+        Writer writer = new Writer(keyboard,pw);
+        writer.start();
+        try {
+            reader.join();
+            writer.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-//        Writer writer = new Writer(keyboard,pw);
-//        writer.start();
 
         pw.println("CLOSE#");
         client.close();
