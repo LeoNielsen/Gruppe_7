@@ -19,21 +19,22 @@ public class EchoClient {
         client = new Socket(address,port);
         pw = new PrintWriter(client.getOutputStream(), true);
         scanner = new Scanner(client.getInputStream());
-        Reader reader = new Reader(scanner);
-        reader.start();
+//        Reader reader = new Reader(scanner);
+//        reader.start();
         Scanner keyboard = new Scanner(System.in);
-//        boolean keepRunning = true;
+        boolean keepRunning = true;
 
-//        while(keepRunning){
-//            String msgToSend = keyboard.nextLine();
-//            pw.println(msgToSend);
-//
-//            if (msgToSend.equals("CLOSE#")){
-//                keepRunning = false;
-//            }
-//        }
-        Writer writer = new Writer(keyboard,pw);
-        writer.start();
+        while(keepRunning){
+            System.out.println(scanner.nextLine());
+            String msgToSend = keyboard.nextLine();
+            pw.println(msgToSend);
+
+            if (msgToSend.equals("CLOSE#")){
+                keepRunning = false;
+            }
+        }
+//        Writer writer = new Writer(keyboard,pw);
+//        writer.start();
 
         pw.println("CLOSE#");
         client.close();
@@ -41,7 +42,7 @@ public class EchoClient {
 
     public static void main(String[] args) throws IOException {
 
-        new EchoClient().connect("localhost",2345);
+        new EchoClient().connect("localhost",8088);
 
 
 
