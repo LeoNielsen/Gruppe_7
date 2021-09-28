@@ -20,6 +20,15 @@ public class Dispatcher implements Runnable{
         }
     }
 
+    public ClientHandler getClient(String name) {
+        for(ClientHandler c : clients) {
+            if(c.getName().equals(name)) {
+                return c;
+            }
+        }
+        return null;
+    }
+
     @Override
     public void run() {
         try {

@@ -27,31 +27,17 @@ public class ClientHandler implements Runnable {
         while (!msg.equals("CLOSE#")) {
             msg = scanner.nextLine();
             if (msg.contains("#")) {
-//                String[] strings = splitMessage(msg);
-//                String action = strings[0];
-//                String s = strings[1];
-//                switch (action) {
-//                    case "UPPER":
-//                        writer.println(s.toUpperCase());
-//                        break;
-//                    case "LOWER":
-//                        writer.println(s.toLowerCase());
-//                        break;
-//                    case "REVERSE":
-//                        char[] chars = msg.toCharArray();
-//                        String reverse = "";
-//                        for (int i = chars.length-1; i > -1; i--) {
-//                            reverse = reverse + chars[i];
-//                        }
-//                        writer.println(reverse);
-//                        break;
-//                    case "ALL":
-//                        messages.add(s);
-//                        //TODO: indsæt besked i delt ressource
-//                        break;
-//                    case "QUIZ":
-//                        doQuiz();
-//                        break;
+
+                String[] strings = msg.split("#");
+                String action = strings[0];
+                String data = strings[strings.length-1];
+
+                switch (action) {
+                    case "SEND":
+                        String receiver = strings[1];
+                        disp.getClient(receiver).getPw().println(name + ": " + data);
+                        break;
+                }
             }
         }
         client.close();
