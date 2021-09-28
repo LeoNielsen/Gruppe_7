@@ -7,17 +7,23 @@ class Reader extends Thread{
 
     boolean keepRunning = true;
     Scanner scFromServer;
-    PrintWriter pw;
 
-    public Reader (Scanner scFromServer, PrintWriter pw){
+
+    public Reader (Scanner scFromServer){
         this.scFromServer = scFromServer;
-        this.pw = pw;
     }
+
+    //TODO: optimer!
 
     @Override
     public void run() {
         while (keepRunning) {
-            System.out.println(scFromServer.nextLine());
+            String output = scFromServer.nextLine();
+            System.out.println(output);
+            if(output.equals("CLOSE#")){
+                keepRunning = false;
+            }
         }
+        scFromServer.close();
     }
 }

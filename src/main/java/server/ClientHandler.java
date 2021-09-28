@@ -42,6 +42,9 @@ public class ClientHandler implements Runnable {
                             disp.getMessages().add(name + " has send to all: " + data);
                         }
                         break;
+                    case "CLOSE":
+                        pw.println("CLOSE#");
+                        break;
                 }
             }
         }

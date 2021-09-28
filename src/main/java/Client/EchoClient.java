@@ -19,7 +19,7 @@ public class EchoClient {
         client = new Socket(address,port);
         pw = new PrintWriter(client.getOutputStream(), true);
         scanner = new Scanner(client.getInputStream());
-        Reader reader = new Reader(scanner, pw);
+        Reader reader = new Reader(scanner);
         reader.start();
         Scanner keyboard = new Scanner(System.in);
 
