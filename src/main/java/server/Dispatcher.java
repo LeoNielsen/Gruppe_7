@@ -3,30 +3,32 @@ package server;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class Dispatcher implements Runnable{
-    BlockingQueue<String> messages;
+public class Dispatcher implements Runnable {
+    BlockingQueue<Message> messages;
     CopyOnWriteArrayList<ClientHandler> clients;
 
-    public Dispatcher(BlockingQueue<String> queue, CopyOnWriteArrayList<ClientHandler> clients){
-        this.messages = queue;
+    public Dispatcher(BlockingQueue<Message> messages, CopyOnWriteArrayList<ClientHandler> clients) {
+        this.messages = messages;
         this.clients = clients;
     }
 
-    public void addClient(ClientHandler client){
-       clients.add(client);
-        for (ClientHandler c : clients) {
-            c.getPw().println("connected# " + client.getName());
-
-        }
-    }
-
-    public BlockingQueue<String> getMessages() {
+    public BlockingQueue<Message> getMessages() {
         return messages;
     }
 
+    public void sendMessage(Message message) {
+        if (message.getReceiver().equals("*")) {
+            for (ClientHandler client : clients) {
+                client.getPw().println(message.getMessage());
+            }
+        } else {
+            getClient(message.getReceiver()).getPw().println(message.getMessage());
+        }
+    }
+
     public ClientHandler getClient(String name) {
-        for(ClientHandler c : clients) {
-            if(c.getName().equals(name)) {
+        for (ClientHandler c : clients) {
+            if (c.getName().equals(name)) {
                 return c;
             }
         }
@@ -36,15 +38,12 @@ public class Dispatcher implements Runnable{
     @Override
     public void run() {
         try {
-            String outMsg = "";
-            while (true){
+            Message outMsg = null;
+            while (true) {
                 outMsg = messages.take();
-                for (ClientHandler client : clients) {
-                    client.getPw().println(outMsg);
-                }
-
+                sendMessage(outMsg);
             }
-        }catch (InterruptedException ie){
+        } catch (InterruptedException ie) {
             ie.printStackTrace();
         }
 

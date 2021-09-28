@@ -11,7 +11,7 @@ public class EchoServer {
 
     private int port;
     private CopyOnWriteArrayList<ClientHandler> clients;
-    private BlockingQueue<String> msg;
+    private BlockingQueue<Message> msg;
 
     public EchoServer(int port) {
         this.port = port;
@@ -25,7 +25,8 @@ public class EchoServer {
         Dispatcher dispatcher = new Dispatcher(msg, clients);
         while (true) {
             Socket client = serverSocket.accept();
-            ClientHandler clientHandler = new ClientHandler(client, dispatcher);
+            ClientHandler clientHandler = new ClientHandler(client, msg);
+            clients.add(clientHandler);
             new Thread(clientHandler).start();
             new Thread(dispatcher).start();
         }
