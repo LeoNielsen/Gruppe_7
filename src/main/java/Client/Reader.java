@@ -8,7 +8,6 @@ class Reader extends Thread{
     boolean keepRunning = true;
     Scanner scFromServer;
 
-
     public Reader (Scanner scFromServer){
         this.scFromServer = scFromServer;
     }

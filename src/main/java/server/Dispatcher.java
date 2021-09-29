@@ -12,16 +12,14 @@ public class Dispatcher implements Runnable {
         this.clients = clients;
     }
 
-    public BlockingQueue<Message> getMessages() {
-        return messages;
-    }
-
-    public void sendMessage(Message message) {
+    public void sendMessage(Message message) throws InterruptedException {
         if (message.getReceiver().equals("*")) {
             for (ClientHandler client : clients) {
                 client.getPw().println(message.getMessage());
             }
         } else {
+            System.out.println(Thread.currentThread().getName() + " looking for client" + message.getReceiver());
+            Thread.sleep(5000);
             getClient(message.getReceiver()).getPw().println(message.getMessage());
         }
     }

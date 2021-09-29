@@ -13,17 +13,9 @@ public class ClientHandler implements Runnable {
     private PrintWriter pw;
     private Scanner scanner;
     private String name;
-    //private Dispatcher disp;
     private BlockingQueue<Message> messages;
     private CopyOnWriteArrayList<User> users;
     private CopyOnWriteArrayList<ClientHandler> clients;
-
-//    public ClientHandler(Socket socket, Dispatcher disp) throws IOException {
-//        this.client = socket;
-//        this.disp = disp;
-//        this.pw = new PrintWriter(client.getOutputStream(), true);
-//        this.scanner = new Scanner(client.getInputStream());
-//    }
 
     public ClientHandler(Socket client, BlockingQueue<Message> messages, CopyOnWriteArrayList<ClientHandler> clients, CopyOnWriteArrayList<User> users) throws IOException {
         this.client = client;
@@ -34,7 +26,7 @@ public class ClientHandler implements Runnable {
         this.scanner = new Scanner(client.getInputStream());
     }
 
-    public User getUser(String name) {
+    public User getUserByName(String name) {
         for (User u : users) {
             if (u.getName().equals(name)) {
                 return u;
@@ -43,7 +35,7 @@ public class ClientHandler implements Runnable {
         return null;
     }
 
-    public User getOnlineUser() {
+    public User getUser() {
         return user;
     }
 
@@ -62,7 +54,7 @@ public class ClientHandler implements Runnable {
         if (s.equalsIgnoreCase("y")) {
             pw.println("Type your name?");
             name = scanner.nextLine();
-            user = getUser(name);
+            user = getUserByName(name);
             clients.add(this);
             if (user == null) {
                 commands("CLOSE#2");
@@ -108,9 +100,12 @@ public class ClientHandler implements Runnable {
                         pw.println("Closing.. (" + msg + ")");
                     }
                     pw.println("CLOSE#");
-                    clients.remove(this);
-                    commands("DISCONNECT#" + name);
-                    client.close();
+                    synchronized (this) {
+                        clients.remove(this);
+                        commands("DISCONNECT#" + name);
+                        client.close();
+                    }
+
                     break;
                 default:
                     pw.println("CLOSE#2");
@@ -123,10 +118,10 @@ public class ClientHandler implements Runnable {
         StringBuilder s = new StringBuilder();
         String n = ", ";
         for (int i = 0; i < clients.size(); i++) {
-            if(i == clients.size()-1) {
+            if (i == clients.size() - 1) {
                 n = "";
             }
-            s.append(clients.get(i).getOnlineUser().getName() + n);
+            s.append(clients.get(i).getUser().getName() + n);
         }
         return s.toString();
     }
