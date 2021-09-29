@@ -43,37 +43,43 @@ public class ClientHandler implements Runnable {
         return null;
     }
 
-//    public User getUser() {
-//        return user;
-//    }
+    public User getOnlineUser() {
+        return user;
+    }
 
     public void protocol() throws IOException {
-        pw.println("Do you have an user? (y/n)");
-        String s = scanner.nextLine();
-        if (s.equalsIgnoreCase("y")) {
-            pw.println("Type your name?");
-            name = scanner.nextLine();
-            User user = getUser(name);
-            if (user == null) {
-                commands("CLOSE#2");
-            } else {
-                messages.add(new Message(name, "*", "CONNECTED# " + name));
-            }
-        } else if (s.equalsIgnoreCase("n")) {
-            pw.println("Hi what is your name?");
-            name = scanner.nextLine();
-            User user = new User(name);
-            users.add(user);
-            messages.add(new Message(name, "*", "CONNECTED# " + name));
-        } else {
-            commands("CLOSE#1");
-        }
-        clients.add(this);
+        startUserLogin();
         String msg = "";
         while (true) {
             msg = scanner.nextLine();
             commands(msg);
         }
+    }
+
+    public void startUserLogin() throws IOException {
+        pw.println("Do you have an user? (y/n)");
+        String s = scanner.nextLine();
+        if (s.equalsIgnoreCase("y")) {
+            pw.println("Type your name?");
+            name = scanner.nextLine();
+            user = getUser(name);
+            clients.add(this);
+            if (user == null) {
+                commands("CLOSE#2");
+            } else {
+                commands("CONNECT#" + name);
+            }
+        } else if (s.equalsIgnoreCase("n")) {
+            pw.println("Hi what is your name?");
+            name = scanner.nextLine();
+            user = new User(name);
+            users.add(user);
+            clients.add(this);
+            commands("CONNECT#" + name);
+        } else {
+            commands("CLOSE#1");
+        }
+
     }
 
     public void commands(String msg) throws IOException {
@@ -85,9 +91,11 @@ public class ClientHandler implements Runnable {
             switch (action) {
                 case "SEND":
                     String receiver = strings[1];
-                    messages.add(new Message(name, receiver, data));
+                    messages.add(new Message(name, receiver, "MESSAGE#" + name + "#" + data));
                     break;
                 case "CONNECT":
+                case "DISCONNECT":
+                    messages.add(new Message(data, "*", "ONLINE#" + getAllOnlineUsers()));
                     break;
                 case "CLOSE":
                     if (data.equals("1")) {
@@ -100,6 +108,8 @@ public class ClientHandler implements Runnable {
                         pw.println("Closing.. (" + msg + ")");
                     }
                     pw.println("CLOSE#");
+                    clients.remove(this);
+                    commands("DISCONNECT#" + name);
                     client.close();
                     break;
                 default:
@@ -107,6 +117,18 @@ public class ClientHandler implements Runnable {
                     break;
             }
         }
+    }
+
+    public String getAllOnlineUsers() {
+        StringBuilder s = new StringBuilder();
+        String n = ", ";
+        for (int i = 0; i < clients.size(); i++) {
+            if(i == clients.size()-1) {
+                n = "";
+            }
+            s.append(clients.get(i).getOnlineUser().getName() + n);
+        }
+        return s.toString();
     }
 
     public PrintWriter getPw() {
