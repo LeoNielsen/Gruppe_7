@@ -18,7 +18,6 @@ public class Dispatcher implements Runnable {
                 client.getPw().println(message.getMessage());
             }
         } else {
-
             try {
                 getClient(message.getReceiver()).getPw().println(message.getMessage());
             } catch (NullPointerException e) {

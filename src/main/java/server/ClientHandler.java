@@ -42,7 +42,7 @@ public class ClientHandler implements Runnable {
     public void protocol() throws IOException {
         startUserLogin();
         String msg = "";
-        while (true) {
+        while (!msg.equals("CLOSE#")) {
             msg = scanner.nextLine();
             commands(msg);
         }
