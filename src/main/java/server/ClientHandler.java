@@ -55,8 +55,7 @@ public class ClientHandler implements Runnable {
             name = scanner.nextLine();
             User user = getUser(name);
             if (user == null) {
-                pw.println("CLOSE#2");
-                client.close();
+                commands("CLOSE#2");
             } else {
                 messages.add(new Message(name, "*", "CONNECTED# " + name));
             }
@@ -67,37 +66,45 @@ public class ClientHandler implements Runnable {
             users.add(user);
             messages.add(new Message(name, "*", "CONNECTED# " + name));
         } else {
-            pw.println("CLOSE#1");
-            client.close();
+            commands("CLOSE#1");
         }
         clients.add(this);
-
-
-
-        client.close();
+        String msg = "";
+        while (true) {
+            msg = scanner.nextLine();
+            commands(msg);
+        }
     }
 
-    public void commands(String msg) {
-        while (!msg.equals("CLOSE#")) {
-            msg = scanner.nextLine();
-            if (msg.contains("#")) {
+    public void commands(String msg) throws IOException {
+        if (msg.contains("#")) {
+            String[] strings = msg.split("#");
+            String action = strings[0];
+            String data = strings[strings.length - 1];
 
-                String[] strings = msg.split("#");
-                String action = strings[0];
-                String data = strings[strings.length - 1];
+            switch (action) {
+                case "SEND":
+                    String receiver = strings[1];
+                    messages.add(new Message(name, receiver, data));
+                    break;
+                case "CONNECT":
+                    break;
+                case "CLOSE":
+                    if (data.equals("1")) {
+                        pw.println("illegal input was received (" + msg + ")");
 
-                switch (action) {
-                    case "SEND":
-                        String receiver = strings[1];
-                        messages.add(new Message(name, receiver, data));
-                        break;
-                    case "CLOSE":
-                        pw.println("CLOSE#");
-                        break;
-                    default:
-                        pw.println("CLOSE#2");
-                        break;
-                }
+                    } else if (data.equals("2")) {
+                        pw.println("User not found (" + msg + ")");
+
+                    } else {
+                        pw.println("Closing.. (" + msg + ")");
+                    }
+                    pw.println("CLOSE#");
+                    client.close();
+                    break;
+                default:
+                    pw.println("CLOSE#2");
+                    break;
             }
         }
     }
