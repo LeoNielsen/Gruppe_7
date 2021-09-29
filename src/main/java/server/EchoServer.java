@@ -11,11 +11,13 @@ public class EchoServer {
 
     private int port;
     private CopyOnWriteArrayList<ClientHandler> clients;
+    private CopyOnWriteArrayList<User> users;
     private BlockingQueue<Message> msg;
 
     public EchoServer(int port) {
         this.port = port;
         this.clients = new CopyOnWriteArrayList<>();
+        this.users = new CopyOnWriteArrayList<>();
     }
 
     public void start() throws IOException {
@@ -25,8 +27,7 @@ public class EchoServer {
         Dispatcher dispatcher = new Dispatcher(msg, clients);
         while (true) {
             Socket client = serverSocket.accept();
-            ClientHandler clientHandler = new ClientHandler(client, msg);
-            clients.add(clientHandler);
+            ClientHandler clientHandler = new ClientHandler(client, msg, clients, users);
             new Thread(clientHandler).start();
             new Thread(dispatcher).start();
         }

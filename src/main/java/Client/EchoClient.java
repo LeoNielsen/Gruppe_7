@@ -40,7 +40,7 @@ public class EchoClient {
 
     public static void main(String[] args) throws IOException {
 
-        new EchoClient().connect("localhost",8088);
+        new EchoClient().connect("localhost",8080);
 
 
 
