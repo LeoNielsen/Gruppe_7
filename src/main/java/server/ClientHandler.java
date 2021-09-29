@@ -121,7 +121,7 @@ public class ClientHandler implements Runnable {
             if (i == clients.size() - 1) {
                 n = "";
             }
-            s.append(clients.get(i).getUser().getName() + n);
+            s.append(clients.get(i).getUser().getName()).append(n);
         }
         return s.toString();
     }

@@ -38,7 +38,7 @@ public class Dispatcher implements Runnable {
     @Override
     public void run() {
         try {
-            Message outMsg = null;
+            Message outMsg;
             while (true) {
                 outMsg = messages.take();
                 sendMessage(outMsg);

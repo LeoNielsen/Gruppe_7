@@ -18,12 +18,11 @@ public class EchoServer {
         this.port = port;
         this.clients = new CopyOnWriteArrayList<>();
         this.users = new CopyOnWriteArrayList<>();
+        this.msg = new ArrayBlockingQueue<>(10);
     }
 
     public void start() throws IOException {
         ServerSocket serverSocket = new ServerSocket(port);
-        clients = new CopyOnWriteArrayList<>();
-        msg = new ArrayBlockingQueue<>(10);
         Dispatcher dispatcher = new Dispatcher(msg, clients);
         while (true) {
             Socket client = serverSocket.accept();

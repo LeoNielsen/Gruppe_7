@@ -1,6 +1,5 @@
 package Client;
 
-import java.io.PrintWriter;
 import java.util.Scanner;
 
 class Reader extends Thread{
@@ -11,8 +10,6 @@ class Reader extends Thread{
     public Reader (Scanner scFromServer){
         this.scFromServer = scFromServer;
     }
-
-    //TODO: optimer!
 
     @Override
     public void run() {
