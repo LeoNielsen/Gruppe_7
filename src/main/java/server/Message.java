@@ -12,6 +12,10 @@ public class Message {
         this.message = message;
     }
 
+    public String getSender() {
+        return sender;
+    }
+
     public String getReceiver() {
         return receiver;
     }

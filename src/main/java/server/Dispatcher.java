@@ -18,9 +18,12 @@ public class Dispatcher implements Runnable {
                 client.getPw().println(message.getMessage());
             }
         } else {
-            System.out.println(Thread.currentThread().getName() + " looking for client" + message.getReceiver());
-            Thread.sleep(5000);
-            getClient(message.getReceiver()).getPw().println(message.getMessage());
+
+            try {
+                getClient(message.getReceiver()).getPw().println(message.getMessage());
+            } catch (NullPointerException e) {
+                getClient(message.getSender()).getPw().println("Receiver: " + message.getReceiver() +" is either offline or do not exist");
+            }
         }
     }
 
